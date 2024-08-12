@@ -22,6 +22,18 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
+    # Ensure the Backend directory and package.json exists
+    - name: Verify Backend directory exists
+      run: |
+        if [ ! -d "Backend" ]; then
+          echo "Backend directory does not exist."
+          exit 1
+        fi
+        if [ ! -f "Backend/package.json" ]; then
+          echo "Backend/package.json does not exist."
+          exit 1
+        fi
+
     # Backend Setup and Test
     - name: Set up Node.js
       uses: actions/setup-node@v1
