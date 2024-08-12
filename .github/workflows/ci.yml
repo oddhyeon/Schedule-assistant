@@ -1,0 +1,81 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    services:
+      mongodb:
+        image: mongo:latest
+        ports:
+          - 27017:27017
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    # Backend Setup and Test
+    - name: Set up Node.js
+      uses: actions/setup-node@v1
+      with:
+        node-version: '14'
+    - name: Install Backend dependencies
+      run: |
+        cd Backend
+        npm install
+    - name: Run Backend tests
+      run: |
+        cd Backend
+        npm test
+
+    # AI Server Setup and Test
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - name: Install AI dependencies
+      run: |
+        cd AI
+        pip install -r requirements.txt
+    - name: Run AI tests
+      run: |
+        cd AI
+        pytest
+
+    # WindowsApp Setup and Test
+    - name: Install WindowsApp dependencies
+      run: |
+        cd WindowsApp
+        npm install
+    - name: Run WindowsApp tests
+      run: |
+        cd WindowsApp
+        npm test
+
+    # AndroidApp Setup and Test
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: '11'
+    - name: Install Android dependencies
+      run: |
+        cd AndroidApp
+        ./gradlew build
+    - name: Run Android tests
+      run: |
+        cd AndroidApp
+        ./gradlew test
+
+    # Integration Tests
+    - name: Run Integration tests
+      run: |
+        # Commands to run integration tests
+        echo "Running integration tests"
